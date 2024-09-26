@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/dldnfla/corp-collab-server/issues"
   },
-  "homepage": "https://github.com/dldnfla/corp-collab-server#readme"
+  "homepage": "https://github.com/dldnfla/corp-collab-server#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mysql2": "^3.11.3",
+    "sequelize": "^6.37.3",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
+  }
 }

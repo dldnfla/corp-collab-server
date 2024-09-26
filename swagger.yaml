@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: My Simple API
+  description: A simple API for demonstrating GET and POST requests
+  version: 1.0.0
+
+servers:
+  - url: http://192.168.0.39:3000
+    description: Local development server
+
+paths:
+  /api/hello:
+    get:
+      summary: Returns a hello message
+      responses:
+        '200':
+          description: A JSON object with a message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hello
+  /api/echo:
+    post:
+      summary: Echoes back the message sent in the request body
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Hello, Echo!
+      responses:
+        '200':
+          description: A JSON object with the echoed message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  echo:
+                    type: string
+                    example: Hello, Echo!
