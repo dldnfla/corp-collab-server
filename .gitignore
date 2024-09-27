@@ -1,0 +1,40 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+
+# Build output
+dist/
+build/
+
+# Logs
+logs
+*.log
+pids
+*.pid
+*.seed
+
+# Coverage reports
+coverage/
+*.lcov
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Temporary files
+tmp/
+temp/
+
+# Miscellaneous
+*.tgz
