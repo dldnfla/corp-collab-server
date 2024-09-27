@@ -7,7 +7,7 @@ const createUser = async () => {
     const response = await axios.post('http://localhost:3000/api/users', {
       userId: 'testUser',
       password: 'testPassword',
-      username: 'Test User',
+      fullName: 'Test User',
       isStudy: false
     });
     console.log('User created:', response.data);
