@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
-  title: My Simple API
+  title: corp-collab-server
   description: A simple API for demonstrating GET and POST requests
   version: 1.0.0
 
 servers:
-  - url: http://192.168.0.39:3000
+  - url: http://43.202.203.36
     description: Local development server
 
 paths:
