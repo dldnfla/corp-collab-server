@@ -8,7 +8,7 @@ const User = sequelize.define('User', {
     autoIncrement: true,
     primaryKey: true,
   },
-  username: {
+  userId: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -16,8 +16,13 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  fullname: {
+  username: {
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  isStudy: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
     allowNull: false,
   },
 },);
