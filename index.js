@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 // JSON 요청 본문 파싱 미들웨어
 app.use(express.json());
 
-// 사용자 관련 API 엔드포인트 연결
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', userRoute);
 
 // 서버 시작
