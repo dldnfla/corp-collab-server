@@ -16,14 +16,14 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  fullName: {
+  username: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   isStudy: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
-    allowNull: false,
+    allowNull: true,
   },
 },);
 
