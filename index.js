@@ -3,14 +3,16 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const sequelize = require('./db.js');
 const userRoutes = require('./src/routes/userRoutes');
-
 const swaggerDocument = YAML.load('./swagger.yaml');
 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json()); // express 미들웨어 설정 
+app.use(express.urlencoded( {extended : false } ));
+app.use(express.json()); 
+
+
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', userRoutes);
 

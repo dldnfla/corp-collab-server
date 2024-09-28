@@ -28,16 +28,14 @@ exports.createUser = async (userData) => {
 
 exports.authenticateUser = async (userId, password) => {
   try {
-    const inputPassword = password;
-    //console.log('Attempting to login with userId:', userId, password); 
     const user = await User.findOne({ userId: userId });
-    console.log(inputPassword);
 
     if (!user) {
       throw console.error('User not found');
     }
-    console.log('Attempting to verify password:', inputPassword); 
-    const verified = await bcrypt.compare(inputPassword, user.password);
+    
+    console.log('Attempting to verify password:', password); 
+    const verified = await bcrypt.compare(password, user.password);
 
     if (!verified) {
       throw new Error('Not Authenticated');

@@ -44,7 +44,7 @@ const runTests = async () => {
   await getUser();   
   await loginUser();
 
-};ㄴ
+};
 
 runTests();
 
