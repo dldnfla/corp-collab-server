@@ -28,7 +28,7 @@ exports.createUser = async (userData) => {
 
 exports.authenticateUser = async (userId, password) => {
   try {
-    const user = await User.findOne({ userId: userId });
+    const user = await User.findOne({ where: {userId: userId }});
 
     if (!user) {
       throw console.error('User not found');
@@ -51,7 +51,7 @@ exports.authenticateUser = async (userId, password) => {
 
 exports.getUserById = async (userId) => {
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findOne({ where: { userId: userId } });
     if (!user) {
       throw new Error('User not found');
     }
@@ -65,13 +65,22 @@ exports.getUserById = async (userId) => {
 
 exports.updateUser = async (userId, userData) => {
   try {
-    const [affectedRows] = await User.update(userData, {
-      where: { id: userId }
-    });
-    if (affectedRows === 0) {
+    const { username, isStudy } = userData;
+
+    const user = await User.findOne({ where: { userId } });
+    if (!user) {
       throw new Error('User not found');
     }
-    return { message: 'User updated' };
+
+    user.username = username !== undefined ? username : user.username;
+    user.isStudy = isStudy !== undefined ? isStudy : user.isStudy;
+
+    await user.save();
+
+    const { password, createdAt, updatedAt, ...userdata } = user.dataValues;
+
+    return userdata;
+
   } catch (error) {
     throw new Error('Failed to update user: ' + error.message);
   }
