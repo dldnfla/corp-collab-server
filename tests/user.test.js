@@ -34,7 +34,7 @@ const loginUser = async () => {
     });
     console.log('loginUser : ',response.data);
   } catch (error) {
-    console.error('Error login', error.response ? error.response.data : error.message);
+    console.error('Error logging in user', error.response ? error.response.data : error.message);
   }
 };
 
@@ -50,13 +50,25 @@ const updateUser = async () => {
   }
 }
 
+const deleteUser = async () => {
+  try {
+    const response = await axios.delete('http://localhost:3000/api/users/testUser');
+    if (response.status === 204) {
+      console.log('deleteUser : { User deleted successfully }'); // 성공 로그 추가
+    }
+  } catch (error) {
+    console.error('Error deleting users:', error.response ? error.response.data : error.message);
+  }
+};
+
+
 // 테스트 실행
 const runTests = async () => {
   await createUser(); 
   await getUser();   
   await loginUser();
   await updateUser();
-
+  await deleteUser();
 };
 
 runTests();
