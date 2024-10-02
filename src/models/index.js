@@ -1,5 +1,6 @@
 const sequelize = require('../../db');
 const User = require('./user');
+const Todo = require('./todo');
 
 // 모든 모델 동기화
 const syncModels = async () => {
@@ -14,5 +15,5 @@ const syncModels = async () => {
 syncModels();
 
 module.exports = {
-  User,
+  User, Todo
 };

@@ -61,6 +61,7 @@ const deleteUser = async () => {
   }
 };
 
+exports.createUser;
 
 // 테스트 실행
 const runTests = async () => {
