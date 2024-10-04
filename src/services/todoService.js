@@ -13,3 +13,16 @@ exports.createTodo = async (id, todoData) => {
     throw new Error('Failed to create todo: ' + error.message);
   }
 };
+
+exports.getTodoList = async (id) => {
+  try {
+    const todolist = await Todo.findAll({ where: { userId:id } });
+    if (!todolist) {
+      return null;
+    }
+    return todolist;
+
+  } catch (error) {
+    throw new Error('Failed to get user: ' + error.message);
+  }
+};
