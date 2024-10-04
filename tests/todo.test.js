@@ -56,6 +56,22 @@ const getTodoList = async () => {
   }
 };
 
+
+const getTodoById = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/api/todos/1',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      },
+    );
+    console.log('getTodoById : ', response.data);
+  } catch (error) {
+    console.error('Error fetching todo:', error.response ? error.response.data : error.message);
+  }
+};
+
 const updateTodo = async () => {
   try {
     const response = await axios.put('http://localhost:3000/api/todos/1',
@@ -75,12 +91,32 @@ const updateTodo = async () => {
   }
 }
 
+const deleteTodo = async () => {
+  try {
+    const response = await axios.delete('http://localhost:3000/api/todos/1',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    if (response.status === 204) {
+      console.log('deleteTodo : { Todo deleted successfully }'); // 성공 로그 추가
+    }
+  } catch (error) {
+    console.error('Error deleting users:', error.response ? error.response.data : error.message);
+  }
+};
+
 
 const runTests = async () => {
   await testUser();
   await createTodo();
   await getTodoList();
+  await getTodoById();
   await updateTodo();
+  await createTodo();
+  await deleteTodo();
 };
 
 runTests();

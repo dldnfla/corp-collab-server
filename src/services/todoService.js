@@ -27,6 +27,21 @@ exports.getTodoList = async (id) => {
   }
 };
 
+exports.getTodoById = async (userId, todoId) => {
+  try {
+    const todo = await Todo.findOne({ where: { userId:userId, id:todoId } });
+    if (!todo) {
+      throw new Error('Todo not found');
+    }
+
+    return todo;
+
+  } catch (error) {
+    throw new Error('Failed to get user: ' + error.message);
+  }
+};
+
+
 exports.updateTodo = async (userId,todoId,NewTodoData) => {
   try {
     const todo = await Todo.findOne({ where: {userId:userId, id:todoId} });
@@ -40,5 +55,23 @@ exports.updateTodo = async (userId,todoId,NewTodoData) => {
 
   } catch (error) {
     throw new Error('Failed to update todo: ' + error.message);
+  }
+};
+
+
+exports.deleteTodo = async (userId, todoId) => {
+  try {
+    const todo = await Todo.findOne({ where: { userId:userId, id: todoId } });
+    if (!todo) {
+      throw new Error('Todo not found');
+    }
+    
+    await Todo.destroy({ where: { userId:userId, id: todoId } });
+    
+    console.log(`User with userId ${todoId} deleted successfully`);
+
+  } catch (error) {
+    console.error('Failed to delete user:', error.message);
+    throw new Error('Failed to delete user: ' + error.message);
   }
 };
