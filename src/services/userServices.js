@@ -33,8 +33,10 @@ exports.authenticateUser = async (userId, password) => {
     if (!verified) {
       throw new Error('Not Authenticated');
     }
- 
-    const token =  jwt.sign(userId, process.env.SECRET_KEY, { algorithm: 'HS256' });
+
+    const id = user.id;
+
+    const token =  jwt.sign(id, process.env.SECRET_KEY, { algorithm: 'HS256' });
     return token;
 
   } catch (error) {

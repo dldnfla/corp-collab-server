@@ -1,11 +1,12 @@
 const { Todo } = require('../models');
 
-exports.createTodo = async (userId, todoData) => {
+exports.createTodo = async (id, todoData) => {
   try {
     const newTodo = await Todo.create({
       title: todoData.title,
       contents: todoData.contents,
-      //userId: userId,  
+      isCheck: todoData.isCheck,
+      userId: id,  
     });
     return newTodo;
   } catch (error) {

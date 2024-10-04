@@ -10,12 +10,12 @@ exports.verifyToken = (req, res, next) => {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  jwt.verify(token, SECRET_KEY, { algorithms: ['HS256'] }, (err, user) => {
-    if (err) {
-      console.log(token);
-      return res.status(403).json({ message: 'Invalid token' })
-    };
-    req.user = user;
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY, { algorithms: ['HS256'] });
+    console.log("decoded: " + decoded);
+    req.user = decoded;  // 토큰에서 추출한 유저 정보를 요청 객체에 추가
     next();
-  });
+  } catch (error) {
+    return res.status(403).json({ message: 'Invalid token' });
+  }
 };

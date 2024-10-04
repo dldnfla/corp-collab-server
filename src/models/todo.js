@@ -16,9 +16,19 @@ const Todo = sequelize.define('Todo', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  isCheck: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: 'id',
+    },
+  },
 });
 
-User.hasMany(Todo); 
-Todo.belongsTo(User);
 
 module.exports = Todo;

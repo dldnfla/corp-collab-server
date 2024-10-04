@@ -22,6 +22,7 @@ const createTodo = async () => {
       {
         title: 'testTitle',
         contents: 'testContent',
+        isCheck: true
       },
       {
         headers: {
