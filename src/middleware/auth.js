@@ -13,7 +13,7 @@ exports.verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, SECRET_KEY, { algorithms: ['HS256'] });
     console.log("decoded: " + decoded);
-    req.user = decoded;  // 토큰에서 추출한 유저 정보를 요청 객체에 추가
+    req.user = decoded;  
     next();
   } catch (error) {
     return res.status(403).json({ message: 'Invalid token' });

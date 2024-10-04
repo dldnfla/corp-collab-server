@@ -1,7 +1,5 @@
-// tests/api.test.js
 const axios = require('axios');
 
-// 사용자 생성 API 테스트
 const createUser = async () => {
   try {
     const response = await axios.post('http://localhost:3000/api/signup', {
@@ -16,7 +14,6 @@ const createUser = async () => {
   }
 };
 
-// 사용자 조회 API 테스트
 const getUser = async () => {
   try {
     const response = await axios.get('http://localhost:3000/api/users/testUser');
@@ -54,7 +51,7 @@ const deleteUser = async () => {
   try {
     const response = await axios.delete('http://localhost:3000/api/users/testUser');
     if (response.status === 204) {
-      console.log('deleteUser : { User deleted successfully }'); // 성공 로그 추가
+      console.log('deleteUser : { User deleted successfully }'); 
     }
   } catch (error) {
     console.error('Error deleting users:', error.response ? error.response.data : error.message);
@@ -63,7 +60,6 @@ const deleteUser = async () => {
 
 exports.createUser;
 
-// 테스트 실행
 const runTests = async () => {
   await createUser(); 
   await getUser();   

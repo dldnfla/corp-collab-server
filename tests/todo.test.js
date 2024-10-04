@@ -101,7 +101,7 @@ const deleteTodo = async () => {
       }
     );
     if (response.status === 204) {
-      console.log('deleteTodo : { Todo deleted successfully }'); // 성공 로그 추가
+      console.log('deleteTodo : { Todo deleted successfully }'); 
     }
   } catch (error) {
     console.error('Error deleting users:', error.response ? error.response.data : error.message);
