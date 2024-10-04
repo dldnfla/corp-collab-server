@@ -27,8 +27,13 @@ const Todo = sequelize.define('Todo', {
       model: User,
       key: 'id',
     },
+    onDelete: 'CASCADE', 
+    onUpdate: 'CASCADE',
   },
 });
+
+User.hasMany(Todo, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Todo.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
 
 
 module.exports = Todo;
