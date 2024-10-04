@@ -26,3 +26,19 @@ exports.getTodoList = async (id) => {
     throw new Error('Failed to get user: ' + error.message);
   }
 };
+
+exports.updateTodo = async (userId,todoId,NewTodoData) => {
+  try {
+    const todo = await Todo.findOne({ where: {userId:userId, id:todoId} });
+    if (!todo) {
+      throw new Error('todo not found');
+    }
+
+    await todo.update(NewTodoData);
+
+    return todo;
+
+  } catch (error) {
+    throw new Error('Failed to update todo: ' + error.message);
+  }
+};

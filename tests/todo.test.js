@@ -56,10 +56,31 @@ const getTodoList = async () => {
   }
 };
 
+const updateTodo = async () => {
+  try {
+    const response = await axios.put('http://localhost:3000/api/todos/1',
+      {
+        title: 'newTestTitle',
+        contents: 'newTestContent',
+        isCheck: false
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    console.log('updateTodo : ', response.data);
+  } catch (error) {
+    console.error('Error updating todo', error.response ? error.response.data : error.message);
+  }
+}
+
+
 const runTests = async () => {
   await testUser();
   await createTodo();
   await getTodoList();
+  await updateTodo();
 };
 
 runTests();

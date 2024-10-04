@@ -5,4 +5,6 @@ const { verifyToken } = require('../middleware/auth');
 
 router.post('/todos', verifyToken, todoController.createTodo);  // 토큰 인증 후 Todo 생성
 router.get('/todos', verifyToken, todoController.getTodoList); 
+router.put('/todos/:todoId',verifyToken, todoController.updateTodo);
+
 module.exports = router;
