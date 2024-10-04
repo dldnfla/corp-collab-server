@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../db');
 
-// 사용자 모델 정의
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,

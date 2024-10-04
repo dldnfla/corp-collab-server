@@ -34,7 +34,7 @@ exports.authenticateUser = async (userId, password) => {
       throw new Error('Not Authenticated');
     }
  
-    const token = jwt.sign({ id: user.id, userId }, SECRET_KEY);
+    const token =  jwt.sign(userId, process.env.SECRET_KEY, { algorithm: 'HS256' });
     return token;
 
   } catch (error) {

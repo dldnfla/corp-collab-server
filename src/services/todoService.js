@@ -5,7 +5,7 @@ exports.createTodo = async (userId, todoData) => {
     const newTodo = await Todo.create({
       title: todoData.title,
       contents: todoData.contents,
-      UserId: userId,  
+      //userId: userId,  
     });
     return newTodo;
   } catch (error) {

@@ -1,12 +1,22 @@
 const axios = require('axios');
-const { userTest } = require('./user.test');
 
-// 토큰을 변수로 저장
-const token = 'YOUR_JWT_TOKEN';  // 로그인 후 받은 JWT 토큰
-
-// Todo 생성 API 테스트
 const createTodo = async () => {
   try {
+    await axios.post('http://localhost:3000/api/signup', {
+      userId: 'testUser',
+      password: 'testPassword',
+      username: 'test user',
+      isStudy: false
+    });
+    const authorizedUser = await axios.post('http://localhost:3000/api/login', {
+      userId: 'testUser',
+      password: 'testPassword',
+    });
+
+    const token = authorizedUser['data']['token'];
+    console.log('AuthorizedUser Status: ', authorizedUser.status);
+    console.log(token);
+
     const response = await axios.post(
       'http://localhost:3000/api/todos',
       {
@@ -15,7 +25,7 @@ const createTodo = async () => {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,  // Authorization 헤더에 토큰 추가
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -25,9 +35,7 @@ const createTodo = async () => {
   }
 };
 
-// 테스트 실행
 const runTests = async () => {
-  await userTest.createUser();
   await createTodo();
 };
 
