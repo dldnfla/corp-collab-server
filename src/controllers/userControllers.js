@@ -20,6 +20,7 @@ exports.authenticateUser = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
+    const id = req.user;  
     const user = await userService.getUserById(req.params.userId);
     res.status(200).json(user);
   } catch (error) {
@@ -29,6 +30,7 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
+    const id = req.user;  
     const result = await userService.updateUser(req.params.userId, req.body);
     res.status(200).json(result);
   } catch (error) {
@@ -38,6 +40,7 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
+    const id = req.user;  
     const result = await userService.deleteUser(req.params.userId);
     res.status(204).json(result);
   } catch (error) {
