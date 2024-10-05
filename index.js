@@ -29,6 +29,7 @@ server.listen(PORT, async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connection established.');
+   //  await sequelize.sync({ alter: true }); // 'alter: true' only applies changes to tables, without dropping them
     console.log(`Server running on port ${PORT}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
