@@ -35,7 +35,7 @@ const createTodo = async () => {
         },
       }
     );
-    console.log('createTodo : ', response.data);
+    console.log('create: ', response.data);
   } catch (error) {
     console.error('Error creating todo:', error.response ? error.response.data : error.message);
   }
