@@ -10,8 +10,6 @@ const createUser = async () => {
       username: 'test user',
       isStudy: false
     });
-    
-
     console.log('createUser : ', response.data);
   } catch (error) {
     console.error('Error creating user:', error.response ? error.response.data : error.message);
@@ -62,6 +60,21 @@ const updateUser = async () => {
   }
 }
 
+const updateWeeklyNote = async () => {
+  try {
+    const response = await axios.put('http://localhost:3000/api/users/testUser/weeklyNote', {
+      weeklyNote: "testNote"
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log('updateWeeklyNote : ', response.data);
+  } catch (error) {
+    console.error('Error updating note', error.response ? error.response.data : error.message);
+  }
+}
+
 const deleteUser = async () => {
   try {
     const response = await axios.delete('http://localhost:3000/api/users/testUser', {
@@ -81,9 +94,10 @@ exports.createUser;
 
 const runTests = async () => {
   await createUser();
-  await getUser();
   await loginUser();
+  await getUser();
   await updateUser();
+  await updateWeeklyNote();
   await deleteUser();
 };
 

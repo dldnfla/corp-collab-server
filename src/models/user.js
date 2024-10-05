@@ -25,6 +25,11 @@ const User = sequelize.define('User', {
     defaultValue: false,
     allowNull: true,
   },
+  weeklyNote: {
+    type: DataTypes.STRING,
+    defaultValue: "",
+    allowNull: true,
+  }
 },);
 
 module.exports = User;

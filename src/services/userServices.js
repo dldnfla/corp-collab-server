@@ -46,7 +46,7 @@ exports.authenticateUser = async (userId, password) => {
 
 exports.getUserById = async (userId) => {
   try {
-    const user = await User.findOne({ where: { userId } });
+    const user = await User.findOne({ where: { userId:userId } });
     if (!user) {
       throw new Error('User not found');
     }
@@ -81,6 +81,27 @@ exports.updateUser = async (userId, userData) => {
 
   } catch (error) {
     throw new Error('Failed to update user: ' + error.message);
+  }
+};
+
+exports.updateWeeklyNote= async (userId, noteData) => {
+  try {
+    const user = await User.findOne({ where: { userId: userId } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (noteData.weeklyNote !== undefined) {
+      user.weeklyNote = noteData.weeklyNote;
+    }
+
+    await user.save();
+
+    const { password, createdAt, updatedAt, ...userdata } = user.dataValues;
+    return userdata;
+
+  } catch (error) {
+    throw new Error('Failed to update note: ' + error.message);
   }
 };
 
