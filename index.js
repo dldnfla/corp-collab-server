@@ -6,12 +6,13 @@ const sequelize = require('./db.js');
 const userRoutes = require('./src/routes/userRoutes');
 const todoRoutes = require('./src/routes/todoRoutes');
 const swaggerDocument = YAML.load('./swagger.yaml');
-
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cors());
 
 const server = http.createServer(app);
 
