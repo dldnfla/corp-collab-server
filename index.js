@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 // CORS 미들웨어 설정
 app.use(cors({
-  origin: 'http://localhost:3000', // 허용할 출처
+  origin: true, // 허용할 출처
   methods: ['GET', 'POST', 'PUT', 'DELETE'] // 허용할 HTTP 메소드
 }));
 
@@ -36,7 +36,7 @@ server.listen(PORT, async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connection established.');
-    // await sequelize.sync({ alter: true }); // 'alter: true' only applies changes to tables, without dropping them
+    await sequelize.sync({ alter: true }); // 'alter: true' only applies changes to tables, without dropping them
     console.log(`Server running on port ${PORT}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
