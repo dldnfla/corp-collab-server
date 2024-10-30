@@ -10,6 +10,8 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -22,7 +24,7 @@ app.use('/api', todoRoutes);
 require('./signalingServer');
 
 app.get('/', (req, res) => {
-  res.send('WebRTC Signaling Server is running');
+  res.send('StudyBuddy');
 });
 
 server.listen(PORT, async () => {
