@@ -14,7 +14,7 @@ exports.authenticateUser = async (req, res) => {
     const token = await userService.authenticateUser(req.body.userId, req.body.password);
     res.status(200).json({token});
   } catch (error) {
-    res.status(500).json({message: error.message});
+    res.status(401).json({message: error.message});
   }
 }
 
