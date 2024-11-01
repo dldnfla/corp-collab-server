@@ -5,8 +5,8 @@ const https = require('https');
 const fs = require('fs');
 
 const options = {
-    key: fs.readFileSync('/home/ubuntu/corp-collab-server/_wildcard.example.dev+3-key.pem'),
-    cert: fs.readFileSync('/home/ubuntu/corp-collab-server/_wildcard.example.dev+3.pem'),
+    key: fs.readFileSync('/Users/leewoorim/Downloads/corp-collab-server/_wildcard.example.dev+3-key.pem'),
+    cert: fs.readFileSync('/Users/leewoorim/Downloads/corp-collab-server/_wildcard.example.dev+3.pem'),
 };
  
 const app = express()
@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
 })
 
 // START THE SERVER =================================================================
-const port = process.env.PORT || 5001
+const port = process.env.PORT || 3000
 server.listen(port,() => {
   console.log(`Express server listening on port ${port}`)
 })
