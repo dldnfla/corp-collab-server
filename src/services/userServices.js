@@ -6,7 +6,13 @@ const SECRET_KEY= crypto.randomBytes(64).toString('hex');
 
 exports.createUser = async (userData) => {
   try {
+    const existingUser = await User.findOne({ where: { userId: userData.userId } });
+    if (existingUser) {
+      throw new Error('User ID already exists');
+    }
+
     const hashedPassword = await bcrypt.hash(userData.password, 10);
+
     const user = await User.create({
       userId: userData.userId,
       password: hashedPassword,
