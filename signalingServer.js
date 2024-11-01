@@ -1,41 +1,63 @@
-const WebSocket = require('ws');
+const express = require('express')
+const { Server } = require('socket.io')
 
-// WebSocket 서버 생성
-const wss = new WebSocket.Server({ port: 5001 });
+const https = require('https');
+const fs = require('fs');
 
-const clients = new Map();
+const options = {
+    key: fs.readFileSync('/Users/leewoorim/Downloads/corp-collab-server/_wildcard.example.dev+3-key.pem'),
+    cert: fs.readFileSync('/Users/leewoorim/Downloads/corp-collab-server/_wildcard.example.dev+3.pem'),
+};
 
-wss.on('connection', (ws) => {
-    console.log('New client connected');
+const app = express()
+const server = https.createServer(options,app)
+const io = new Server(server)
 
-    // 클라이언트가 보내는 메시지 수신
-    ws.on('message', (message) => {
-        const data = JSON.parse(message);
-        switch (data.type) {
-            case 'join':
-                clients.set(data.userId, ws);
-                console.log(`${data.userId} joined the signaling server`);
-                break;
-            case 'offer':
-            case 'answer':
-            case 'candidate':
-                // 상대방에게 메시지를 전송
-                const targetClient = clients.get(data.targetUserId);
-                if (targetClient) {
-                    targetClient.send(JSON.stringify(data));
-                }
-                break;
-            case 'leave':
-                clients.delete(data.userId);
-                console.log(`${data.userId} left the signaling server`);
-                break;
-        }
-    });
+app.use('/', express.static('public'))
 
-    // 클라이언트 연결 종료 시 실행
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
-});
+io.on('connection', (socket) => {
+  socket.on('join', (roomId) => {
+    const selectedRoom = io.sockets.adapter.rooms.get(roomId)
+    const numberOfClients = selectedRoom ? selectedRoom.size : 0
 
-console.log('Signaling server running on ws://localhost:5001');
+    if (numberOfClients === 0) {
+      console.log(`Creating room ${roomId} and emitting room_created socket event`)
+      socket.join(roomId)
+      socket.emit('room_created', roomId)
+    } else if (numberOfClients === 1) {
+      console.log(`Joining room ${roomId} and emitting room_joined socket event`)
+      socket.join(roomId)
+      socket.emit('room_joined', roomId)
+    } else {
+      console.log(`Can't join room ${roomId}, emitting full_room socket event`)
+      socket.emit('full_room', roomId)
+    }
+  })
+
+  // These events are emitted to all the sockets connected to the same room except the sender.
+  socket.on('start_call', (roomId) => {
+    console.log(`Broadcasting start_call event to peers in room ${roomId}`)
+    socket.to(roomId).emit('start_call')
+  })
+
+  socket.on('webrtc_offer', (event) => {
+    console.log(`Broadcasting webrtc_offer event to peers in room ${event.roomId}`)
+    socket.to(event.roomId).emit('webrtc_offer', event.sdp)
+  })
+
+  socket.on('webrtc_answer', (event) => {
+    console.log(`Broadcasting webrtc_answer event to peers in room ${event.roomId}`)
+    socket.to(event.roomId).emit('webrtc_answer', event.sdp)
+  })
+
+  socket.on('webrtc_ice_candidate', (event) => {
+    console.log(`Broadcasting webrtc_ice_candidate event to peers in room ${event.roomId}`)
+    socket.to(event.roomId).emit('webrtc_ice_candidate', event)
+  })
+})
+
+// START THE SERVER =================================================================
+const port = process.env.PORT || 5001
+server.listen(port,() => {
+  console.log(`Express server listening on port ${port}`)
+})
