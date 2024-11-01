@@ -8,7 +8,7 @@ const options = {
     key: fs.readFileSync('/home/ubuntu/corp-collab-server/_wildcard.example.dev+3-key.pem'),
     cert: fs.readFileSync('/home/ubuntu/corp-collab-server/_wildcard.example.dev+3.pem'),
 };
-
+ 
 const app = express()
 const server = https.createServer(options,app)
 const io = new Server(server)
