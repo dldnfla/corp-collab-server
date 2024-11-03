@@ -6,9 +6,9 @@ const { verifyToken } = require('../middleware/auth');
 
 router.post('/signup', userController.createUser);
 router.post('/login', userController.authenticateUser);
-router.get('/users/:userId', verifyToken, userController.getUserById);
-router.put('/users/:userId',verifyToken, userController.updateUser);
-router.put('/users/:userId/weeklyNote',verifyToken, userController.updateWeeklyNote);
-router.delete('/users/:userId', verifyToken, userController.deleteUser);
+router.get('/users/:username', verifyToken, userController.getUserById);
+router.put('/users/:username',verifyToken, userController.updateUser);
+router.put('/users/:username/weeklyNote',verifyToken, userController.updateWeeklyNote);
+router.delete('/users/:username', verifyToken, userController.deleteUser);
 
 module.exports = router;

@@ -33,7 +33,7 @@
       #local-video {
         position: absolute;
         transform: rotateY(180deg); /**카메라좌우반전 아래 밑줄까지**/
-        -webkit-transform:rotateY(180deg);
+        -webkit-transform: rotateY(180deg);
         height: 30%;
         width: 30%;
         bottom: 0px;
@@ -43,6 +43,14 @@
       #remote-video {
         height: 100%;
         width: 100%;
+      }
+
+      #end-call-button {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        font-size: 16px;
       }
     </style>
   </head>
@@ -60,7 +68,43 @@
       <video id="remote-video" autoplay="autoplay"></video>
     </div>
 
+    <button id="end-call-button" style="display: none;">End Call and Upload</button>
+
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="client.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const endCallButton = document.getElementById('end-call-button');
+
+        // endCallButton이 제대로 로드되었는지 확인
+        if (endCallButton) {
+          endCallButton.addEventListener('click', () => {
+            console.log('Ending call and uploading video...');
+            // 여기에 통화 종료 및 비디오 업로드 로직 추가
+            stopRecording();
+            // 필요한 경우 서버로 비디오 업로드하는 함수 호출
+          });
+        } else {
+          console.error('endCallButton not found');
+        }
+
+        // 추가: 방 선택 후 비디오 채팅 컨테이너와 버튼 표시
+        const connectButton = document.getElementById('connect-button');
+        connectButton.addEventListener('click', () => {
+          // 방에 연결 후 비디오 채팅 화면 및 버튼 표시
+          document.getElementById('room-selection-container').style.display = 'none';
+          document.getElementById('video-chat-container').style.display = 'block';
+          endCallButton.style.display = 'block'; // 버튼 보이기
+          // 여기에 방에 연결하는 로직 추가
+        });
+      });
+
+      function stopRecording() {
+        // 비디오 녹화 종료 및 업로드 로직
+        console.log('Recording stopped');
+        // 여기에서 비디오 파일을 서버에 업로드하는 로직을 추가하세요.
+      }
+    </script>
   </body>
 </html>
