@@ -94,20 +94,13 @@ paths:
         '401':
           description: Authentication failed
 
-  /users/{userId}:
+  /users:
     get:
       tags:
         - User
       summary: Get user by ID
       security:
         - bearerAuth: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          description: The ID of the user to retrieve
-          schema:
-            type: string
       responses:
         '200':
           description: User details retrieved successfully

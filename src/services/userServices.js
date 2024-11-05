@@ -52,7 +52,7 @@ exports.authenticateUser = async (userId, password) => {
 
 exports.getUserById = async (userId) => {
   try {
-    const user = await User.findOne({ where: { userId:userId } });
+    const user = await User.findOne({ where: { id:userId } });
     if (!user) {
       throw new Error('User not found');
     }

@@ -21,7 +21,7 @@ exports.authenticateUser = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const id = req.user;  
-    const user = await userService.getUserById(req.params.userId);
+    const user = await userService.getUserById(id);
     res.status(200).json(user);
   } catch (error) {
     res.status(400).json({ message: error.message });

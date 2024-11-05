@@ -18,7 +18,7 @@ const createUser = async () => {
 
 const getUser = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/users/testUser', {
+    const response = await axios.get('http://localhost:3000/api/users', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
