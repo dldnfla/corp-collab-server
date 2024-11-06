@@ -92,7 +92,7 @@ const deleteUser = async () => {
 
 const searchUser = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/users/testUser', {
+    const response = await axios.get('http://localhost:3000/api/users/search/testUser', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

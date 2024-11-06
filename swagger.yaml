@@ -178,7 +178,7 @@ paths:
         '404':
           description: User not found
 
-  /users/{searchUser}:
+  /users/search:
     get:
       tags:
         - User
