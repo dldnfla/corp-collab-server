@@ -64,7 +64,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // 이 이벤트는 같은 방에 연결된 소켓에 전파됩니다.
     socket.on('start_call', (roomId) => {
         console.log(`Broadcasting start_call event to peers in room ${roomId}`);
         socket.to(roomId).emit('start_call');

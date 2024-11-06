@@ -26,7 +26,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', userRoutes);
 app.use('/api', todoRoutes);
 
-//require('./signalingServer');
+require('./signalingServer');
 
 app.get('/', (req, res) => {
   res.send('StudyBuddy');
