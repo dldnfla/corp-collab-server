@@ -117,7 +117,7 @@ paths:
                     type: boolean
         '404':
           description: User not found
-
+  /users/{userId}:
     put:
       tags:
         - User
@@ -177,15 +177,16 @@ paths:
           description: User deleted successfully
         '404':
           description: User not found
-
-  /users/search:
+  /users/{searchUser}:
     get:
       tags:
         - User
       summary: Search for users by userId
+      security:
+        - bearerAuth: []
       description: Search for users by providing part or full of userId using a 'like' query
       parameters:
-        - in: query
+        - in: path
           name: searchUser
           required: true
           schema:
