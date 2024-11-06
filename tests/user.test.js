@@ -90,11 +90,26 @@ const deleteUser = async () => {
   }
 };
 
+const searchUser = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/api/users/testUser', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log('searchUser : ', response.data);
+  } catch (error) {
+    console.error('Error searching users:', error.response ? error.response.data : error.message);
+  }
+};
+
+
 exports.createUser;
 
 const runTests = async () => {
   await createUser();
   await loginUser();
+  await searchUser();
   await getUser();
   await updateUser();
   await updateWeeklyNote();

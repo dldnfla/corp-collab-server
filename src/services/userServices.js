@@ -2,7 +2,8 @@ const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const SECRET_KEY= crypto.randomBytes(64).toString('hex');
+const { Op } = require('sequelize');
+const SECRET_KEY = crypto.randomBytes(64).toString('hex');
 
 exports.createUser = async (userData) => {
   try {
@@ -34,7 +35,7 @@ exports.authenticateUser = async (userId, password) => {
     if (!user) {
       throw new Error('User not found');
     }
-    
+
     const verified = await bcrypt.compare(password, user.password);
     if (!verified) {
       throw new Error('Not Authenticated');
@@ -42,7 +43,7 @@ exports.authenticateUser = async (userId, password) => {
 
     const id = user.id;
 
-    const token =  jwt.sign(id, process.env.SECRET_KEY, { algorithm: 'HS256' });
+    const token = jwt.sign(id, process.env.SECRET_KEY, { algorithm: 'HS256' });
     return token;
 
   } catch (error) {
@@ -52,7 +53,7 @@ exports.authenticateUser = async (userId, password) => {
 
 exports.getUserById = async (userId) => {
   try {
-    const user = await User.findOne({ where: { id:userId } });
+    const user = await User.findOne({ where: { id: userId } });
     if (!user) {
       throw new Error('User not found');
     }
@@ -90,7 +91,7 @@ exports.updateUser = async (userId, userData) => {
   }
 };
 
-exports.updateWeeklyNote= async (userId, noteData) => {
+exports.updateWeeklyNote = async (userId, noteData) => {
   try {
     const user = await User.findOne({ where: { userId: userId } });
     if (!user) {
@@ -117,13 +118,13 @@ exports.deleteUser = async (userId) => {
     if (!user) {
       throw new Error('User not found');
     }
-    
+
     const affectedRows = await User.destroy({ where: { userId: userId } });
-    
+
     if (affectedRows === 0) {
       throw new Error(`User with userId: ${userId} not found`);
     }
-    
+
     console.log(`User with userId ${userId} deleted successfully`);
 
   } catch (error) {
@@ -131,3 +132,25 @@ exports.deleteUser = async (userId) => {
     throw new Error('Failed to delete user: ' + error.message);
   }
 };
+
+exports.searchUser = async (searchUser) => {
+  try {
+    const userList = await User.findAll({
+      where: {
+        userId: {
+          [Op.like]: `%${searchUser}%`
+        }
+      }
+    })
+
+    if (userList.length === 0) {
+      throw new Error(`${searchUser} not found`)
+    }
+    
+    return userList;
+
+  } catch (error) {
+    console.error('Error searching for users:', error);
+    throw error; // 오류 처리
+  }
+}

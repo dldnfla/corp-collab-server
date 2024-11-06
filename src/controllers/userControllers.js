@@ -54,3 +54,12 @@ exports.deleteUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.searchUser = async (req, res) => {
+  try{
+    const result = await userService.searchUser(req.params.searchUser);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
