@@ -178,6 +178,74 @@ paths:
         '404':
           description: User not found
 
+  /users/{searchUser}:
+    get:
+      tags:
+        - User
+      summary: Search for users by userId
+      description: Search for users by providing part or full of userId using a 'like' query
+      parameters:
+        - in: query
+          name: searchUser
+          required: true
+          schema:
+            type: string
+          description: "The partial or full userId to search for"
+      responses:
+        '200':
+          description: User search successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        userId:
+                          type: string
+                          example: "john_doe123"
+                        username:
+                          type: string
+                          example: "John Doe"
+                        isStudy:
+                          type: boolean
+                          example: true
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "User not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "An error occurred while searching for the user"
+
   /users/{userId}/weeklyNote:
     put:
       tags:
