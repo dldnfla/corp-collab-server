@@ -18,7 +18,11 @@ const io = new Server(server);
 // Multer 설정
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // 파일이 저장될 디렉토리
+        const uploadDir = 'uploads/';
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir); // uploads 디렉토리가 없으면 생성
+        }
+        cb(null, uploadDir); // 파일이 저장될 디렉토리
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`); // 파일 이름을 현재 시간 + 원래 이름으로 설정
@@ -28,7 +32,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // 정적 파일 제공
-app.use('/', express.static('public'));
+//app.use('/', express.static('public')); // public 디렉토리에서 정적 파일 제공
 
 // 업로드 엔드포인트
 app.post('/upload', upload.single('video'), (req, res) => {
@@ -46,6 +50,8 @@ app.post('/upload', upload.single('video'), (req, res) => {
 
 // Socket.IO 이벤트 처리
 io.on('connection', (socket) => {
+    console.log('New client connected:', socket.id);
+
     socket.on('join', (roomId) => {
         const selectedRoom = io.sockets.adapter.rooms.get(roomId);
         const numberOfClients = selectedRoom ? selectedRoom.size : 0;
@@ -82,6 +88,11 @@ io.on('connection', (socket) => {
     socket.on('webrtc_ice_candidate', (event) => {
         console.log(`Broadcasting webrtc_ice_candidate event to peers in room ${event.roomId}`);
         socket.to(event.roomId).emit('webrtc_ice_candidate', event);
+    });
+
+    socket.on('disconnect', () => {
+        console.log(`Client disconnected: ${socket.id}`);
+        // 여기서 필요한 추가 처리: 예를 들어, 방에서 나간 사용자에게 알려주기
     });
 });
 
