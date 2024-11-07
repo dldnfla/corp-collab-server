@@ -1,6 +1,7 @@
 const sequelize = require('../../db');
 const User = require('./user');
 const Todo = require('./todo');
+const Follow = require('./follow');
 
 const syncModels = async () => {
   try {
@@ -14,5 +15,5 @@ const syncModels = async () => {
 syncModels();
 
 module.exports = {
-  User, Todo
+  User, Todo, Follow
 };
