@@ -7,6 +7,6 @@ const { verifyToken } = require('../middleware/auth');
 router.post('/follow', verifyToken, followController.createFollow);
 router.get('/followings', verifyToken, followController.getFollowings);
 router.get('/followers', verifyToken, followController.getFollowers);
-router.delete('/follow', verifyToken, followController.removeFollow);
+router.delete('/follow/:followee', verifyToken, followController.removeFollow);
 
 module.exports = router;

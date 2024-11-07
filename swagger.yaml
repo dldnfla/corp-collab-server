@@ -485,3 +485,182 @@ paths:
           description: Not authenticated
         '500':
           description: Internal server error
+  /follow:
+    post:
+      summary: Follow a user
+      security:
+        - bearerAuth: []
+      description: Allows the authenticated user to follow another user
+      tags:
+        - Follow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                followee:
+                  type: string
+                  example: "user2"
+          description: User ID of the person to follow            
+      responses:
+        201:
+          description: User successfully followed
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "User successfully followed"
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "You are already following this user"
+        404:
+          description: User not found
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "User not found"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "Internal server error"
+  /follow/{userId}: 
+    delete:
+      summary: Unfollow a user
+      security:
+        - bearerAuth: []
+      description: Allows the authenticated user to unfollow another user
+      tags:
+        - Follow
+      parameters:
+        - in: path
+          name: userId
+          description: User ID of the person to unfollow
+          required: true
+          schema:
+              type: string
+              example: "string2"
+      responses:
+        200:
+          description: User successfully unfollowed
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Follow removed"
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "You are not following this user"
+        404:
+          description: User not found
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "User not found"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "Internal server error"
+
+  /followings:
+    get:
+      summary: Get list of users the authenticated user is following
+      security:
+        - bearerAuth: []
+      description: Retrieve all the users the authenticated user is following
+      tags:
+        - Follow
+      responses:
+        200:
+          description: List of following users
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: "user2"
+                username:
+                  type: string
+                  example: "User 2"
+        401:
+          description: Unauthorized
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "Unauthorized"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "Internal server error"
+
+  /followers:
+    get:
+      summary: Get list of users following the authenticated user
+      security:
+        - bearerAuth: []
+      description: Retrieve all the users who are following the authenticated user
+      tags:
+        - Follow
+      responses:
+        200:
+          description: List of follower users
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: "user1"
+                username:
+                  type: string
+                  example: "User 1"
+        401:
+          description: Unauthorized
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "Unauthorized"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "Internal server error"

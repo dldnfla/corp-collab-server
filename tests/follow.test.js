@@ -79,12 +79,8 @@ const getFollowers = async () => {
 // 팔로우 취소
 const removeFollow = async (targetUserId) => {
   try {
-    const response = await axios.delete('http://localhost:3000/api/follow', {
+    const response = await axios.delete(`http://localhost:3000/api/follow/${targetUserId}`, {
       headers: { Authorization: `Bearer ${token}` },
-      data: {
-        follower: user1Id,  // 팔로워를 명시적으로 지정
-        followee: targetUserId  // 팔로우를 취소할 대상 유저를 명시적으로 지정
-      }
     });
     console.log(`Unfollow ${targetUserId}: `, response.data);
   } catch (error) {

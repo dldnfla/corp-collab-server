@@ -48,8 +48,10 @@ exports.getFollowers = async (req, res) => {
 };
 
 exports.removeFollow = async (req, res) => {
-  const currentUser = req.user; // 로그인한 유저 정보 사용
-  const userId = req.body.followee;  // 팔로우 취소할 유저의 userId
+  const currentUser = req.user; 
+  const userId = req.params.followee;  
+
+  console.log("----------",currentUser,userId);
 
   try {
     const targetUser = await followService.getUserByUserId(userId);
