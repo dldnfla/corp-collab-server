@@ -16,12 +16,32 @@ exports.createFollow = async (currentUserId, targetUserId) => {
 };
 
 exports.getFollowings = async (userId) => {
-  return await db.Follow.findAll({ where: { follower: userId } });  // follower가 userId인 모든 팔로우 정보 조회
+  const followings = await db.Follow.findAll({
+    where: { follower: userId },
+    include: {
+      model: db.User,
+      as: 'Followee', // Follow 모델에서 'Followee'로 설정한 alias 사용
+      attributes: ['username', 'isStudy'], // 가져올 컬럼만 선택 (username, isStudy)
+    },
+  });
+
+  // 팔로잉된 유저만 반환 (Followee만)
+  return followings.map(follow => follow.Followee);
 };
 
-// 팔로우 목록 가져오기
+// 팔로워 목록 가져오기 (userId를 팔로우하는 사용자들)
 exports.getFollowers = async (userId) => {
-  return await db.Follow.findAll({ where: { followee: userId } });
+  const followers = await db.Follow.findAll({
+    where: { followee: userId },
+    include: {
+      model: db.User,
+      as: 'Follower', // Follow 모델에서 'Follower'로 설정한 alias 사용
+      attributes: ['username', 'isStudy'], // 가져올 컬럼만 선택 (username, isStudy)
+    },
+  });
+
+  // 팔로워된 유저만 반환 (Follower만)
+  return followers.map(follow => follow.Follower);
 };
 
 // 팔로우 취소

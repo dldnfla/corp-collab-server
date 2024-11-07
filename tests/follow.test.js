@@ -110,14 +110,19 @@ const runTests = async () => {
   // 로그인
   await loginUser(user1Id);
 
-  // 팔로우 테스트
+  // 팔로잉 목록 테스트
   await followUser(user2Id);
-  await getFollowings();  // 팔로우한 사용자 목록 조회
-  await getFollowers();   // 팔로워 목록 조회
+  await getFollowings(); 
+
+  // 팔로워 목록 테스트
+  await loginUser(user2Id);
+  await getFollowers();  
 
   // 팔로우 취소 테스트
+  await loginUser(user1Id);
+  
   await removeFollow(user2Id);
-  await getFollowings();  // 팔로우한 사용자 목록 조회
+  await getFollowings();  
 
   // 유저 삭제
   await deleteUser(user1Id);
