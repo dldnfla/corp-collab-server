@@ -1,0 +1,5 @@
+{
+    "ignore": ["path/to/database/files/*", "src/models/*"],
+    "ext": "js,json"
+}
+  

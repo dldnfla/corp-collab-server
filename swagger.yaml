@@ -93,7 +93,6 @@ paths:
                     type: string
         '401':
           description: Authentication failed
-
   /users:
     get:
       tags:
@@ -117,6 +116,42 @@ paths:
                     type: boolean
         '404':
           description: User not found
+  /allUsers:
+    get:
+      tags:
+        - User
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Returns a list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+        '400':
+          description: Failed to fetch users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Failed to get users: No users found
   /users/{userId}:
     put:
       tags:

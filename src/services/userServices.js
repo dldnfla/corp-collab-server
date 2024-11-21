@@ -66,6 +66,28 @@ exports.getUserById = async (userId) => {
   }
 };
 
+exports.getAllUsers = async () => {
+  try {
+    // 모든 사용자 가져오기
+    const users = await User.findAll();
+    if (!users || users.length === 0) {
+      throw new Error('No users found');
+    }
+
+    // 불필요한 필드 제거 (password, createdAt, updatedAt)
+    const sanitizedUsers = users.map((user) => {
+      const { password, createdAt, updatedAt, ...userData } = user.dataValues;
+      return userData;
+    });
+
+    return sanitizedUsers;
+  } catch (error) {
+    // 오류 메시지 포함하여 예외 처리
+    throw new Error('Failed to get users: ' + error.message);
+  }
+};
+
+
 exports.updateUser = async (userId, userData) => {
   try {
     const user = await User.findOne({ where: { userId } });

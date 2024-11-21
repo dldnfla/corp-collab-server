@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors'); // CORS 패키지 import 추가
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const http = require('http');
@@ -10,16 +10,15 @@ const followRoutes = require('./src/routes/followRoutes');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-// CORS 미들웨어 설정
 app.use(cors({
-  origin: true, // 허용할 출처
-  methods: ['GET', 'POST', 'PUT', 'DELETE'] // 허용할 HTTP 메소드
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors());
 
 const server = http.createServer(app);
 
@@ -28,17 +27,23 @@ app.use('/api', userRoutes);
 app.use('/api', todoRoutes);
 app.use('/api', followRoutes);
 
-//require('./signalingServer');
+require('./signalingServer');
 
 app.get('/', (req, res) => {
   res.send('StudyBuddy');
+});
+
+app.get('/api/camera', (req, res) => {
+  res.send('Camera endpoint');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 server.listen(PORT, async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connection established.');
-   // await sequelize.sync({ alter: true }); // 'alter: true' only applies changes to tables, without dropping them
+    await sequelize.sync(); // alter 옵션 제거
+    console.log('Database synchronized.');
     console.log(`Server running on port ${PORT}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);

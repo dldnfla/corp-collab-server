@@ -5,8 +5,8 @@ const Follow = require('./follow');
 
 const syncModels = async () => {
   try {
-    await sequelize.sync({ force: true }); 
-    console.log('Database & tables created!');
+    await sequelize.sync({ alter: true }); // alter: true를 사용하여 기존 데이터를 보존하면서 필요한 경우 테이블을 수정
+    console.log('Database & tables synchronized!');
   } catch (error) {
     console.error('Error syncing models:', error);
   }

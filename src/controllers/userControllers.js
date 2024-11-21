@@ -28,6 +28,15 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const user = await userService.getAllUsers();
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.updateUser = async (req, res) => {
   try {
     const result = await userService.updateUser(req.params.userId, req.body);

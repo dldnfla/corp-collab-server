@@ -20,8 +20,8 @@ exports.getFollowings = async (userId) => {
     where: { follower: userId },
     include: {
       model: db.User,
-      as: 'Followee', // Follow 모델에서 'Followee'로 설정한 alias 사용
-      attributes: ['username', 'isStudy'], // 가져올 컬럼만 선택 (username, isStudy)
+      as: 'Followee',
+      attributes: ['userId','username', 'isStudy'], // 가져올 컬럼만 선택 (username, isStudy)
     },
   });
 
@@ -35,8 +35,8 @@ exports.getFollowers = async (userId) => {
     where: { followee: userId },
     include: {
       model: db.User,
-      as: 'Follower', // Follow 모델에서 'Follower'로 설정한 alias 사용
-      attributes: ['username', 'isStudy'], // 가져올 컬럼만 선택 (username, isStudy)
+      as: 'Follower',
+      attributes: ['userId','username', 'isStudy'], // 가져올 컬럼만 선택 (username, isStudy)
     },
   });
 
