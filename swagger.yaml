@@ -5,7 +5,7 @@ info:
   description: Combined API documentation for User Management and Todo Management.
 
 servers:
-  - url: http://43.202.203.36:3000/api
+  - url: http://43.203.252.52:3000/api
 
 components:
   securitySchemes:

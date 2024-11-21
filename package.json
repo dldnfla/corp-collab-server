@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/dldnfla/corp-collab-server#readme",
   "dependencies": {
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
