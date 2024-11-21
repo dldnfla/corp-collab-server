@@ -29,7 +29,7 @@ app.use('/api', todoRoutes);
 app.use('/api', followRoutes);
 app.use('/api', fileRoutes);
 
-require('./signalingServer');
+require('./src/signalingServer.js');
 
 app.get('/', (req, res) => {
   res.send('StudyBuddy');

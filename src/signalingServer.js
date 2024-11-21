@@ -4,6 +4,9 @@ const http = require('http');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
+const { User } = require('./models');
+
 
 const app = express();
 const server = http.createServer(app);
@@ -110,7 +113,8 @@ io.on('connection', (socket) => {
     });
 
     // 클라이언트 연결 해제
-    socket.on('disconnect', () => {
+    // 클라이언트 연결 해제
+    socket.on('disconnect', async () => {
         console.log(`Client disconnected: ${socket.id}`);
 
         // 방에서 클라이언트 제거 및 방 삭제 처리
@@ -119,9 +123,12 @@ io.on('connection', (socket) => {
             const clientIndex = room.clients.indexOf(socket.id);
 
             if (clientIndex !== -1) {
+                const userId = room.userId; // 방에 저장된 userId 가져오기
+
+                // 클라이언트를 방 목록에서 제거
                 room.clients.splice(clientIndex, 1);
 
-                // 방의 소유자가 나갔다면 방 삭제
+                // 방 소유자가 나갔을 때 방 삭제
                 if (room.owner === socket.id) {
                     delete rooms[roomId];
                     console.log(`Room ${roomId} deleted because owner disconnected.`);
@@ -129,6 +136,23 @@ io.on('connection', (socket) => {
                 } else if (room.clients.length === 0) {
                     delete rooms[roomId];
                     console.log(`Room ${roomId} deleted (no clients left).`);
+                }
+
+                // isStudy 값을 false로 업데이트
+                try {
+                    const user = await User.findOne({ where: { userId } });
+                    if (!user) {
+                        throw new Error('User not found');
+                    }
+
+                    user.isStudy = false;
+                    await user.save();
+
+                    console.log(`User ${userId} isStudy updated to false`);
+                    socket.emit('isStudy_update', { status: 'success', message: `User ${userId} isStudy updated to false` });
+                } catch (error) {
+                    console.error(`Error updating isStudy for user ${userId}:`, error.message);
+                    socket.emit('isStudy_update', { status: 'error', message: `Error updating isStudy: ${error.message}` });
                 }
             }
         }
