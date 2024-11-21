@@ -7,6 +7,7 @@ const sequelize = require('./db.js');
 const userRoutes = require('./src/routes/userRoutes');
 const todoRoutes = require('./src/routes/todoRoutes');
 const followRoutes = require('./src/routes/followRoutes');
+const fileRoutes = require('./src/routes/fileRoutes');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', userRoutes);
 app.use('/api', todoRoutes);
 app.use('/api', followRoutes);
+app.use('/api', fileRoutes);
 
 require('./signalingServer');
 
