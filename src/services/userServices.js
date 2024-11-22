@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const { Op } = require('sequelize');
 const SECRET_KEY = crypto.randomBytes(64).toString('hex');
 
+
 exports.createUser = async (userData) => {
   try {
     const existingUser = await User.findOne({ where: { userId: userData.userId } });
