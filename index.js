@@ -44,7 +44,7 @@ server.listen(PORT, async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connection established.');
-    await sequelize.sync(); // alter 옵션 제거
+    await sequelize.sync(); // alter 
     console.log('Database synchronized.');
     console.log(`Server running on port ${PORT}`);
   } catch (error) {

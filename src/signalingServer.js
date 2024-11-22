@@ -7,7 +7,6 @@ const path = require('path');
 const axios = require('axios');
 const { User } = require('./models');
 
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { transports: ['websocket'] });
@@ -28,14 +27,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// 업로드 엔드포인트
 app.post('/upload', upload.single('video'), (req, res) => {
     if (req.file) {
-        console.log('Received video file:');
-        console.log(`Filename: ${req.file.filename}`);
-        console.log(`Path: ${req.file.path}`);
-        console.log(`Mimetype: ${req.file.mimetype}`);
-        console.log(`Size: ${req.file.size} bytes`);
+        console.log('Received video file:', req.file);
         res.status(200).send('Video uploaded successfully');
     } else {
         res.status(400).send('No file received');
@@ -45,14 +39,17 @@ app.post('/upload', upload.single('video'), (req, res) => {
 // 방 정보를 저장하기 위한 메모리 객체
 const rooms = {};
 
+// 로그 출력 함수
+function logRoomState() {
+    console.log('Current rooms state:', JSON.stringify(rooms, null, 2));
+}
+
 // Socket.IO 이벤트 처리
 io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
+    console.log(`New client connected: ${socket.id}`);
 
-    // 클라이언트 연결 확인 응답
     socket.emit('connection_success', { message: 'Connection established', socketId: socket.id });
 
-    // 클라이언트가 방 생성 요청
     socket.on('create_room', (roomInfo, callback) => {
         console.log('Received create_room request:', roomInfo);
 
@@ -71,11 +68,12 @@ io.on('connection', (socket) => {
             rooms[roomId] = { roomId, userId, owner: socket.id, clients: [socket.id] };
             socket.join(roomId);
             console.log(`Room ${roomId} created by user ${userId}`);
+            console.log('Current rooms state:', rooms);  // 상태 출력 추가
             callback({ status: 'success', roomId });
         }
     });
 
-    // 클라이언트가 방에 참여
+
     socket.on('join', (roomId) => {
         const selectedRoom = io.sockets.adapter.rooms.get(roomId);
         const numberOfClients = selectedRoom ? selectedRoom.size : 0;
@@ -84,8 +82,8 @@ io.on('connection', (socket) => {
             console.log(`Room ${roomId} does not exist`);
             socket.emit('room_status', { message: 'Room does not exist', roomId });
         } else if (numberOfClients === 1) {
-            console.log(`Client ${socket.id} joined room ${roomId}`);
-            rooms[roomId].clients.push(socket.id); // 방의 클라이언트 목록에 추가
+            console.log(`Client ${socket.id} joining room ${roomId}`);
+            rooms[roomId].clients.push(socket.id); // 방에 클라이언트 추가
             socket.join(roomId);
             socket.emit('room_status', { message: 'Joined room successfully', roomId });
         } else {
@@ -94,26 +92,42 @@ io.on('connection', (socket) => {
         }
     });
 
-    // WebRTC Offer 처리
+
     socket.on('webrtc_offer', (event) => {
-        console.log(`Broadcasting webrtc_offer event to peers in room ${event.roomId}`);
+        console.log(`webrtc_offer received for room ${event.roomId}`);
+        console.log(`Offer SDP: ${JSON.stringify(event.sdp, null, 2)}`);
+
+        if (!rooms[event.roomId]) {
+            console.error(`Room ${event.roomId} does not exist.`);
+            return;
+        }
+
+        console.log(`Broadcasting webrtc_offer to peers in room ${event.roomId}`);
         socket.to(event.roomId).emit('webrtc_offer', event.sdp);
     });
 
-    // WebRTC Answer 처리
     socket.on('webrtc_answer', (event) => {
-        console.log(`Broadcasting webrtc_answer event to peers in room ${event.roomId}`);
+        console.log(`Received webrtc_answer for room ${event.roomId}`);
+        if (!rooms[event.roomId]) {
+            console.error(`Room ${event.roomId} does not exist.`);
+            return;
+        }
         socket.to(event.roomId).emit('webrtc_answer', event.sdp);
     });
 
-    // ICE Candidate 처리
     socket.on('webrtc_ice_candidate', (event) => {
-        console.log(`Broadcasting webrtc_ice_candidate event to peers in room ${event.roomId}`);
+        console.log(`ICE Candidate received for room ${event.roomId}`);
+        console.log(`Candidate: ${JSON.stringify(event.candidate, null, 2)}`);
+
+        if (!rooms[event.roomId]) {
+            console.error(`Room ${event.roomId} does not exist.`);
+            return;
+        }
+
+        console.log(`Broadcasting ICE Candidate to room ${event.roomId}`);
         socket.to(event.roomId).emit('webrtc_ice_candidate', event);
     });
 
-    // 클라이언트 연결 해제
-    // 클라이언트 연결 해제
     socket.on('disconnect', async () => {
         console.log(`Client disconnected: ${socket.id}`);
 
@@ -123,9 +137,8 @@ io.on('connection', (socket) => {
             const clientIndex = room.clients.indexOf(socket.id);
 
             if (clientIndex !== -1) {
-                const userId = room.userId; // 방에 저장된 userId 가져오기
+                console.log(`Removing client ${socket.id} from room ${roomId}`);
 
-                // 클라이언트를 방 목록에서 제거
                 room.clients.splice(clientIndex, 1);
 
                 // 방 소유자가 나갔을 때 방 삭제
@@ -137,23 +150,6 @@ io.on('connection', (socket) => {
                     delete rooms[roomId];
                     console.log(`Room ${roomId} deleted (no clients left).`);
                 }
-
-                // isStudy 값을 false로 업데이트
-                try {
-                    const user = await User.findOne({ where: { userId } });
-                    if (!user) {
-                        throw new Error('User not found');
-                    }
-
-                    user.isStudy = false;
-                    await user.save();
-
-                    console.log(`User ${userId} isStudy updated to false`);
-                    socket.emit('isStudy_update', { status: 'success', message: `User ${userId} isStudy updated to false` });
-                } catch (error) {
-                    console.error(`Error updating isStudy for user ${userId}:`, error.message);
-                    socket.emit('isStudy_update', { status: 'error', message: `Error updating isStudy: ${error.message}` });
-                }
             }
         }
     });
@@ -162,5 +158,5 @@ io.on('connection', (socket) => {
 // 서버 시작
 const port = process.env.PORT || 5001;
 server.listen(port, () => {
-    console.log(`Express server listening on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
