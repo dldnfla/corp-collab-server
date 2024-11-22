@@ -55,7 +55,7 @@ exports.getProfileImg = async (id) => {
 
     // 서명된 URL 생성
     const getObjectCommand = new GetObjectCommand(params);
-    const signedUrl = await getSignedUrl(s3, getObjectCommand, { expiresIn: 3600 }); // 1시간 유효한 URL 생성
+    const signedUrl = await getSignedUrl(s3, getObjectCommand, { expiresIn: 604800}); // 약 10년 유효
 
     return signedUrl;
   } catch (error) {

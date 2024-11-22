@@ -67,21 +67,23 @@ exports.getUserById = async (userId) => {
   }
 };
 
-exports.getAllUsers = async () => {
+exports.getAllUsers = async (currentUserId) => {
   try {
-    // 모든 사용자 가져오기
-    const users = await User.findAll();
+    // 현재 로그인한 유저를 제외하고 사용자 가져오기
+    const users = await User.findAll({
+      where: {
+        id: {
+          [Op.ne]: currentUserId, // 현재 유저 ID 제외
+        },
+      },
+      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }, // 불필요한 필드 제외
+    });
+
     if (!users || users.length === 0) {
       throw new Error('No users found');
     }
 
-    // 불필요한 필드 제거 (password, createdAt, updatedAt)
-    const sanitizedUsers = users.map((user) => {
-      const { password, createdAt, updatedAt, ...userData } = user.dataValues;
-      return userData;
-    });
-
-    return sanitizedUsers;
+    return users;
   } catch (error) {
     // 오류 메시지 포함하여 예외 처리
     throw new Error('Failed to get users: ' + error.message);
