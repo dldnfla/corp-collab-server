@@ -1,110 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebRTC</title>
 
-    <style type="text/css">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebRTC</title>
+
+  <style type="text/css">
+    body {
+      margin: 0;
+      font-size: 16px;
+      overflow: hidden;
+      background-color: black;
+    }
+
+    #video-chat-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+
+    #local-video, #remote-video {
+      width: 50%; /* 두 비디오가 화면의 50%를 차지 */
+      height: 50%; /* 두 비디오의 높이를 동일하게 설정 */
+      object-fit: cover; /* 비율에 맞게 비디오 자르기 */
+      border-radius: 10px;
+      margin-bottom: 10px; /* 비디오 간 간격 */
+    }
+
+    #local-video {
+      transform: rotateY(180deg); /* 로컬 비디오 좌우 반전 */
+    }
+
+    #end-call-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #end-call-button:hover {
+      background-color: #cc0000;
+    }
+
+    #room-selection-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+
+    #connect-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #connect-button:hover {
+      background-color: #45a049;
+    }
+
+    /* 모바일 화면에서 가로 화면으로 변경 */
+    @media (max-width: 600px) {
+      /* 모바일 화면에서 가로화면으로 비디오 크기 및 배치 */
       body {
-        margin: 0;
-        font-size: 20px;
-      }
-
-      .centered {
-        position: absolute;
-        top: 40%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-
-      .video-position {
-        position: absolute;
-        top: 35%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-
-      #video-chat-container {
-        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
         background-color: black;
       }
 
-      #local-video {
-        position: absolute;
-        transform: rotateY(180deg); /**카메라좌우반전 아래 밑줄까지**/
-        -webkit-transform: rotateY(180deg);
-        height: 30%;
-        width: 30%;
-        bottom: 0px;
-        left: 0px;
+      #video-chat-container {
+        flex-direction: row; /* 비디오 수평 배치 */
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
       }
 
-      #remote-video {
-        height: 100%;
-        width: 100%;
+      #local-video, #remote-video {
+        width: 45%; /* 각 비디오 화면의 45%를 차지 */
+        height: 45%; /* 두 비디오의 높이 균등하게 설정 */
+        margin: 0 2%; /* 비디오 간 간격 조정 */
+      }
+
+      #room-selection-container {
+        font-size: 14px; /* 작은 화면에서는 폰트 크기 조정 */
       }
 
       #end-call-button {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 15px;
-        font-size: 16px;
+        font-size: 14px; /* 버튼 크기 줄이기 */
       }
-    </style>
-  </head>
+    }
+  </style>
+</head>
 
-  <body>
-    <div id="room-selection-container" class="centered">
-      <h1>WebRTC video conference</h1>
-      <label>Enter the number of the room you want to connect</label>
-      <input id="room-input" type="text" />
-      <button id="connect-button">CONNECT</button>
-    </div>
+<body>
+  <div id="room-selection-container" class="centered">
+    <h1>WebRTC video conference</h1>
+    <label>Enter the number of the room you want to connect</label>
+    <input id="room-input" type="text" />
+    <button id="connect-button">CONNECT</button>
+  </div>
 
-    <div id="video-chat-container" class="video-position" style="display: none">
-      <video id="local-video" autoplay="autoplay" muted="muted"></video>
-      <video id="remote-video" autoplay="autoplay"></video>
-    </div>
+  <div id="video-chat-container" class="video-position">
+    <video id="local-video" autoplay="autoplay" muted="muted"></video>
+    <video id="remote-video" autoplay="autoplay"></video>
+  </div>
 
-    <button id="end-call-button" style="display: none;">End Call and Upload</button>
+  <button id="end-call-button" style="display: none;">End Call and Upload</button>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="client.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="client.js"></script>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const endCallButton = document.getElementById('end-call-button');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const endCallButton = document.getElementById('end-call-button');
 
-        // endCallButton이 제대로 로드되었는지 확인
-        if (endCallButton) {
-          endCallButton.addEventListener('click', () => {
-            console.log('Ending call and uploading video...');
-            // 여기에 통화 종료 및 비디오 업로드 로직 추가
-            stopRecording();
-            // 필요한 경우 서버로 비디오 업로드하는 함수 호출
-          });
-        } else {
-          console.error('endCallButton not found');
-        }
-
-        // 추가: 방 선택 후 비디오 채팅 컨테이너와 버튼 표시
-        const connectButton = document.getElementById('connect-button');
-        connectButton.addEventListener('click', () => {
-          // 방에 연결 후 비디오 채팅 화면 및 버튼 표시
-          document.getElementById('room-selection-container').style.display = 'none';
-          document.getElementById('video-chat-container').style.display = 'block';
-          endCallButton.style.display = 'block'; // 버튼 보이기
-          // 여기에 방에 연결하는 로직 추가
+      // endCallButton이 제대로 로드되었는지 확인
+      if (endCallButton) {
+        endCallButton.addEventListener('click', () => {
+          console.log('Ending call and uploading video...');
+          // 여기에 통화 종료 및 비디오 업로드 로직 추가
+          stopRecording();
+          // 필요한 경우 서버로 비디오 업로드하는 함수 호출
         });
-      });
-
-      function stopRecording() {
-        // 비디오 녹화 종료 및 업로드 로직
-        console.log('Recording stopped');
-        // 여기에서 비디오 파일을 서버에 업로드하는 로직을 추가하세요.
+      } else {
+        console.error('endCallButton not found');
       }
-    </script>
-  </body>
+
+      // 추가: 방 선택 후 비디오 채팅 컨테이너와 버튼 표시
+      const connectButton = document.getElementById('connect-button');
+      connectButton.addEventListener('click', () => {
+        // 방에 연결 후 비디오 채팅 화면 및 버튼 표시
+        document.getElementById('room-selection-container').style.display = 'none';
+        document.getElementById('video-chat-container').style.display = 'block';
+        endCallButton.style.display = 'block'; // 버튼 보이기
+        // 여기에 방에 연결하는 로직 추가
+      });
+    });
+
+    function stopRecording() {
+      // 비디오 녹화 종료 및 업로드 로직
+      console.log('Recording stopped');
+      // 여기에서 비디오 파일을 서버에 업로드하는 로직을 추가하세요.
+    }
+  </script>
+</body>
+
 </html>

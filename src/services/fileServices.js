@@ -1,6 +1,9 @@
 const { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const { User } = require('../models'); 
+const multer = require('multer');
+const express = require('express');
+const router = express.Router(); 
 
 // S3 클라이언트 생성
 const s3 = new S3Client({
@@ -65,3 +68,54 @@ exports.getProfileImg = async (id) => {
     throw new Error('Failed to fetch file from S3: ' + error.message);
   }
 };
+
+// multer 설정: 비디오 업로드
+const upload = multer({
+  dest: './uploads/', // 업로드된 파일 저장 폴더
+  limits: { fileSize: 100 * 1024 * 1024 }, // 최대 파일 크기 100MB
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(webm|mp4)$/)) {
+      return cb(new Error('Only video files are allowed.'));
+    }
+    cb(null, true);
+  }
+});
+
+
+router.post('/upload', upload.single('video'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No video file uploaded.');
+  }
+
+  console.log(`File uploaded successfully: ${req.file.path}`);
+
+  // 업로드된 파일의 경로
+  const inputFilePath = req.file.path;
+  const outputFilePath = `./uploads/timelapse-${Date.now()}.mp4`; // 타임랩스 비디오 출력 파일 경로
+
+  // FFmpeg로 타임랩스 비디오 변환
+  ffmpeg(inputFilePath)
+    .output(outputFilePath)
+    .videoFilters('setpts=0.25*PTS') // 타임랩스 효과 (프레임 속도 4배 빠르게)
+    .on('end', async () => {
+      console.log('Timelapse conversion finished.');
+
+      // 변환된 비디오를 S3로 업로드
+      const fileStream = fs.createReadStream(outputFilePath);
+      const s3Params = {
+        Bucket: 'studybuddy-s3-bucket',
+        Key: `timelapse/timelapse-${Date.now()}.mp4`, // S3에 저장될 파일 이름
+        Body: fileStream,
+        ContentType: 'video/mp4',
+      };
+
+      const command = new PutObjectCommand(s3Params);
+      await s3.send(command);
+    })
+    .on('error', (err) => {
+      console.error('Error during FFmpeg process:', err);
+      res.status(500).send('Error processing video.');
+    })
+    .run();
+});
+module.exports = router;

@@ -220,7 +220,7 @@ async function sendRecording(blob) {
   formData.append('video', blob, 'recording.webm');
 
   try {
-      await fetch('/upload', { // 서버의 업로드 엔드포인트
+      await fetch('http://15.164.74.145:3000/upload', { // 서버의 업로드 엔드포인트
           method: 'POST',
           body: formData,
       });
