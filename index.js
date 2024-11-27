@@ -8,7 +8,6 @@ const userRoutes = require('./src/routes/userRoutes');
 const todoRoutes = require('./src/routes/todoRoutes');
 const followRoutes = require('./src/routes/followRoutes');
 const fileRoutes = require('./src/routes/fileRoutes');
-const video = require('./src/services/fileServices.js');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,7 +28,6 @@ app.use('/api', userRoutes);
 app.use('/api', todoRoutes);
 app.use('/api', followRoutes);
 app.use('/api', fileRoutes);
-app.use('/',video);
 
 require('./signalingServer.js');
 

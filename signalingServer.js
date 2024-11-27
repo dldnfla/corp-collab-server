@@ -117,6 +117,10 @@ io.on('connection', (socket) => {
     console.log(`Broadcasting webrtc_ice_candidate event to peers in room ${event.roomId}`)
     socket.to(event.roomId).emit('webrtc_ice_candidate', event)
   })
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 })
 
 // START THE SERVER =================================================================
