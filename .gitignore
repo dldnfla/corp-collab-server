@@ -30,6 +30,7 @@ Thumbs.db
 
 # Optional npm cache directory
 .npm
+.env
 
 # Temporary files
 tmp/
